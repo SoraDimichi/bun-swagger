@@ -14,8 +14,6 @@ import type { Item } from "../models/Item";
 @Route("items")
 @Tags("Items")
 export class ItemsController extends Controller {
-  private initializeDatabase() {}
-
   /**
    * Retrieve a list of all items.
    */
