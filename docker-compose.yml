@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  bun-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.bun
+    ports:
+      - "3000:3000"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8080:8080"
+    environment:
+      SWAGGER_JSON_URL: http://localhost:3000/swagger.json

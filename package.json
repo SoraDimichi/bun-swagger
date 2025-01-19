@@ -1,0 +1,23 @@
+{
+  "name": "bun-swagger",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "tsoa-spec": "tsoa spec",
+    "tsoa-routes": "tsoa routes",
+    "generate": "bun run tsoa-spec && bun run tsoa-routes",
+    "start": "bun run src/server.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2",
+    "tsoa": "^6.6.0"
+  }
+}
+
