@@ -14,9 +14,6 @@ import type { Item } from "../models/Item";
 @Route("items")
 @Tags("Items")
 export class ItemsController extends Controller {
-  /**
-   * Retrieve a list of all items.
-   */
   @Get("/")
   @OperationId("getAllItems")
   @SuccessResponse("200", "OK")
@@ -25,10 +22,6 @@ export class ItemsController extends Controller {
     return rows as Item[];
   }
 
-  /**
-   * Retrieve a single item by its ID.
-   * @param id The ID of the item to retrieve.
-   */
   @Get("{id}")
   @OperationId("getItemById")
   @SuccessResponse("200", "OK")

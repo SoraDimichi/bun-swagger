@@ -10,14 +10,14 @@
     "start": "bun run src/server.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.17"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "reflect-metadata": "^0.2.2",
-    "tsoa": "^6.6.0"
+    "tsoa": "^6.6.0",
+    "cors": "^2.8.5"
   }
 }
-
