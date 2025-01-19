@@ -7,8 +7,6 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
-
-    "outDir": "dist",
     "allowJs": true,
 
     "esModuleInterop": true,

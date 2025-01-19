@@ -16,8 +16,6 @@ const initialItems = [
   { name: "Item 3", description: "This is the third item." },
 ];
 
-console.log(db.query("SELECT COUNT(*) as total FROM items").all());
-
 db.query("SELECT COUNT(*) as total FROM items")
   .all()
   .forEach((record) => {
