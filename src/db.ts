@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite";
 
-export const db = new Database("myDatabase.sqlite");
+export const db = new Database(`${import.meta.dir}/myDatabase.sqlite`);
 
 db.run(`
   CREATE TABLE IF NOT EXISTS items (

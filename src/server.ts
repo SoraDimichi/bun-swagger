@@ -1,20 +1,11 @@
 import express from "express";
-import { readFileSync } from "fs";
-import { join } from "path";
-import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import { RegisterRoutes } from "./routes/routes";
-
-const swaggerSpecPath = join(__dirname, "swagger.json");
-const swaggerSpec = JSON.parse(readFileSync(swaggerSpecPath, "utf-8"));
+import swaggerDoc from "./swagger.json";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.get("/swagger.json", (_, res) => {
-  res.status(200).json(swaggerSpec);
-});
-
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 RegisterRoutes(app);
 
 app.use((_, res) => {
