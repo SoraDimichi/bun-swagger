@@ -1,20 +1,16 @@
 import "reflect-metadata";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { RegisterRoutes } from "./routes/routes"; // <-- TSOA generated file
+import { RegisterRoutes } from "./routes/routes";
 
-// Mock TSOA expects certain Express types:
 type RequestHandler = (req: any, res: any, next: any) => any;
 
-// Our in-memory route store
 const routesStore: {
   method: string;
   pathPattern: string;
   handler: RequestHandler;
 }[] = [];
 
-// Create a mock router object that TSOA's RegisterRoutes will populate.
-// Each method simply pushes a {method, path, handler} into routesStore.
 const mockRouter: any = {
   get: (pathPattern: string, handler: RequestHandler) =>
     routesStore.push({ method: "GET", pathPattern, handler }),
@@ -28,11 +24,8 @@ const mockRouter: any = {
     routesStore.push({ method: "OPTIONS", pathPattern, handler }),
 };
 
-// Now call TSOA's RegisterRoutes with our mock router
 RegisterRoutes(mockRouter);
 
-// We'll need a small utility to match routes with path params:
-// e.g. stored route '/items/:id' should match incoming '/items/123'.
 const matchRoute = (tsoaPattern: string, requestPath: string) => {
   const splittedPattern = tsoaPattern
     .split("/")
@@ -60,7 +53,6 @@ const matchRoute = (tsoaPattern: string, requestPath: string) => {
   return { matched, params };
 };
 
-// CORS headers
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -68,7 +60,6 @@ const corsHeaders = {
   "Access-Control-Allow-Credentials": "true",
 };
 
-// Load swagger.json for serving
 const swaggerSpecPath = join(__dirname, "swagger.json");
 const swaggerSpec = JSON.parse(readFileSync(swaggerSpecPath, "utf-8"));
 
@@ -77,12 +68,10 @@ const handleRequest = async (req: Request) => {
   const method = req.method;
   const path = url.pathname;
 
-  // Preflight
   if (method === "OPTIONS") {
     return Promise.resolve(new Response(null, { headers: corsHeaders }));
   }
 
-  // Serve swagger.json
   if (method === "GET" && path === "/swagger.json") {
     return Promise.resolve(
       new Response(JSON.stringify(swaggerSpec), {
@@ -92,7 +81,6 @@ const handleRequest = async (req: Request) => {
     );
   }
 
-  // Serve minimal Swagger UI
   if (method === "GET" && path === "/docs") {
     const swaggerUiHtml = `
       <!DOCTYPE html>
@@ -122,7 +110,6 @@ const handleRequest = async (req: Request) => {
     );
   }
 
-  // Attempt to match a stored TSOA route
   const matchedRoute = routesStore.find((storedRoute) => {
     if (storedRoute.method !== method) {
       return false;
@@ -131,7 +118,6 @@ const handleRequest = async (req: Request) => {
     return routeMatchResult.matched;
   });
 
-  // No match => 404
   if (!matchedRoute) {
     return Promise.resolve(
       new Response(JSON.stringify({ message: "Not found" }), {
@@ -141,10 +127,8 @@ const handleRequest = async (req: Request) => {
     );
   }
 
-  // If matched, parse path parameters:
   const matchedParams = matchRoute(matchedRoute.pathPattern, path).params;
 
-  // We must parse the body. We'll return a Promise, parse or empty object on error.
   return req
     .json()
     .then((jsonBody) => jsonBody)
@@ -187,8 +171,6 @@ const handleRequest = async (req: Request) => {
         }
       };
 
-      // Call the TSOA route handler
-      // matchedRoute.handler is from `RegisterRoutes` -> e.g. function (req, res, next) {...}
       return Promise.resolve(matchedRoute.handler(expressReq, expressRes, next))
         .then(() => {
           return new Response(expressRes.body, {
@@ -208,7 +190,6 @@ const handleRequest = async (req: Request) => {
     });
 };
 
-// Start Bun server
 Bun.serve({
   port: 3000,
   fetch: handleRequest,
